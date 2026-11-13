@@ -5,6 +5,10 @@
 @section('content')
     <h1 class="text-2xl font-bold mb-4">Barangay Bulletin</h1>
 
+    @if (session('status'))
+        <p class="bg-emerald-100 text-emerald-800 rounded px-4 py-2 mb-4">{{ session('status') }}</p>
+    @endif
+
     <form method="GET" action="{{ route('posts.index') }}" class="flex flex-col sm:flex-row gap-2 mb-6">
         <input name="q" value="{{ request('q') }}" placeholder="Search title"
                class="flex-1 border rounded px-3 py-2">
@@ -19,7 +23,7 @@
         @if (request('tag'))
             <input type="hidden" name="tag" value="{{ request('tag') }}">
         @endif
-        
+
         <button class="bg-emerald-700 text-white rounded px-4 py-2">Filter</button>
     </form>
 
