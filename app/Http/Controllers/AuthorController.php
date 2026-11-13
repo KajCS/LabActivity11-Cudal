@@ -2,9 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Author;
 
 class AuthorController extends Controller
 {
-    //
+    public function show(Author $author)
+    {
+        $posts = $author->posts()
+            ->where('is_published', true)
+            ->with('tags')
+            ->withCount('comments')
+            ->latest('published_at')
+            ->get();
+
+        $commentsReceived = $author->comments()->count();
+
+        return view('authors.show', compact('author', 'posts', 'commentsReceived'));
+    }
 }
