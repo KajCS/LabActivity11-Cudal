@@ -45,6 +45,13 @@ class PostController extends Controller
         $post->views = $post->views + 1;
         $post->save();
 
+        $post->load([
+            'author',
+            'tags',
+            'comments' => fn ($query) => $query->latest(),
+            'comments.user',
+        ]);
+
         return view('posts.show', compact('post'));
     }
 }
