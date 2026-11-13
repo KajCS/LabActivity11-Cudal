@@ -9,7 +9,10 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::query()->where('is_published', true);
+        $query = Post::query()
+            ->with(['author', 'tags'])
+            ->withCount('comments')
+            ->where('is_published', true);
 
         if ($request->filled('q')) {
             $query->where('title', 'like', '%' . $request->input('q') . '%');
@@ -17,6 +20,12 @@ class PostController extends Controller
 
         if ($request->filled('category')) {
             $query->where('category', $request->input('category'));
+        }
+
+        if ($request->filled('tag')) {
+            $query->whereHas('tags', function ($tagQuery) use ($request) {
+                $tagQuery->where('name', $request->input('tag'));
+            });
         }
 
         $posts = $query->orderByDesc('is_pinned')
